@@ -1,3 +1,5 @@
-# gasfree-client
+# gasfree-client and server 
 
-updated who owns this 
+Metamask snaps
+Node server
+Mongodb database
