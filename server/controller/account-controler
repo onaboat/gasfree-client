@@ -1,0 +1,75 @@
+require('dotenv').config()
+const ethers = require('ethers');
+const infuraUrl = `https://mainnet.infura.io/v3/${process.env.INFURA_API}`;
+const provider = new ethers.providers.JsonRpcProvider(infuraUrl);
+const walletAddress = '0xYourWalletAddressHere';
+
+// ERC20 Transfer Event Signature
+const erc20TransferSignature = ethers.utils.id("Transfer(address,address,uint256)");
+
+// ERC721 Transfer Event Signature
+const erc21TransferSignature = ethers.utils.id("Transfer(address,address,uint256)");
+
+async function getFirstAndLastTransaction() {
+  const startBlock = 0;
+  const endBlock = await provider.getBlockNumber();
+  let firstTransaction = null;
+  let lastTransaction = null;
+
+  for (let blockNumber = startBlock; blockNumber <= endBlock; blockNumber++) {
+    const block = await provider.getBlockWithTransactions(blockNumber);
+
+    block.transactions.forEach(transaction => {
+      if (transaction.from.toLowerCase() === walletAddress.toLowerCase() ||
+          transaction.to.toLowerCase() === walletAddress.toLowerCase()) {
+        if (!firstTransaction) firstTransaction = transaction;
+        lastTransaction = transaction;
+      }
+    });
+  }
+
+  return { firstTransaction, lastTransaction };
+}
+
+async function getLast20Transactions() {
+    const startBlock = 0;
+    const endBlock = await web3.eth.getBlockNumber();
+    const transactions = [];
+  
+    for (let blockNumber = endBlock; blockNumber >= startBlock && transactions.length < 20; blockNumber--) {
+      const block = await web3.eth.getBlock(blockNumber, true);
+  
+      block.transactions.forEach(transaction => {
+        if ((transaction.from.toLowerCase() === walletAddress.toLowerCase() ||
+             transaction.to.toLowerCase() === walletAddress.toLowerCase()) &&
+             transactions.length < 20) {
+          transactions.push(transaction);
+        }
+      });
+    }
+  
+    return transactions.slice(-20); // Return the last 20 transactions
+  }
+
+async function countERC20Transactions() {
+  // ... Similar to before, using provider.getLogs
+}
+
+async function countERC721Transactions() {
+  // ... Similar to before, using provider.getLogs
+}
+
+async function getAccountBalance() {
+  const balanceWei = await provider.getBalance(walletAddress);
+  const balanceEther = ethers.utils.formatEther(balanceWei);
+  return balanceEther;
+}
+
+// Example usage
+(async () => {
+  console.log(await getFirstAndLastTransaction());
+  console.log(await getLast20Transactions());
+  console.log(await countERC20Transactions());
+  console.log(await countERC721Transactions());
+  console.log(await getAccountBalance());
+})();
