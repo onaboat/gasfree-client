@@ -1,33 +1,35 @@
-import { OnRpcRequestHandler } from '@metamask/snaps-types';
-import { panel, text } from '@metamask/snaps-ui';
+import { OnTransactionHandler } from '@metamask/snaps-types';
+import { heading, panel, text, image } from '@metamask/snaps-ui';
 
-/**
- * Handle incoming JSON-RPC requests, sent through `wallet_invokeSnap`.
- *
- * @param args - The request handler args as object.
- * @param args.origin - The origin of the request, e.g., the website that
- * invoked the snap.
- * @param args.request - A validated JSON-RPC request object.
- * @returns The result of `snap_dialog`.
- * @throws If the request method is not valid for this snap.
- */
-export const onRpcRequest: OnRpcRequestHandler = ({ origin, request }) => {
-  switch (request.method) {
-    case 'hello':
-      return snap.request({
-        method: 'snap_dialog',
-        params: {
-          type: 'confirmation',
-          content: panel([
-            text(`Hello, **${origin}**!`),
-            text('This custom confirmation is just for display purposes.'),
-            text(
-              'But you can edit the snap source code to make it do something, if you want to!',
-            ),
-          ]),
-        },
-      });
-    default:
-      throw new Error('Method not found.');
-  }
+// Handle outgoing transactions.
+export const onTransaction: OnTransactionHandler = async ({ 
+  transaction,
+  chainId,
+  transactionOrigin,
+ }) => {
+
+  // Get fields from the transaction object.
+  const address = transaction.to;
+  // const tranactionInfo = JSON.stringify(transaction);
+  // const chainIdInfo = chainId;
+  // const transactionOriginInfo = transactionOrigin;
+
+  // console.log('transaction', transaction);
+  // console.log('chainId', chainId);
+  // console.log('transactionOrigin', transactionOrigin);
+
+  // Display transaction insights UI.
+  return {
+    content: panel({
+      children: [
+        heading('Transaction data Data'),
+        image({
+            src: 'https://placehold.co/600x400/png',
+            width: 100,
+            height: 100,
+        }),
+        text(`Some image`),
+      ]
+    })
+  };
 };
