@@ -1,4 +1,5 @@
-import { OnRpcRequestHandler } from '@metamask/snaps-types';
+
+import { OnRpcRequestHandler, OnTransactionHandler } from '@metamask/snaps-types';
 import { panel, text, heading } from '@metamask/snaps-ui';
 
 
@@ -7,17 +8,22 @@ export const onTransaction: OnTransactionHandler = async ({
   transaction,
   chainId,
   transactionOrigin,
+}: {
+  transaction: string; // Specify the type of the 'transaction' parameter
+  chainId: string;
+  transactionOrigin: string;
 }) => {
-  const transactionInfo = JSON.stringify(transaction)
+  const transactionInfo = JSON.parse(transaction)
   const chainIdInfo = chainId;
   const transactionOriginInfo = transactionOrigin;
  
+
   return {
     content: panel([
       heading('My Transaction Insights'),
       text(`${transactionInfo}`),
       text(`${chainIdInfo}`),
-      text(`${transactionOriginInfo}`),
+      text(`${transactionOriginInfo}`)
     ])
   };
 };
