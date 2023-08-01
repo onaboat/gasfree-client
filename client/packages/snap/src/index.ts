@@ -1,5 +1,28 @@
 import { OnRpcRequestHandler } from '@metamask/snaps-types';
-import { panel, text } from '@metamask/snaps-ui';
+import { panel, text, heading } from '@metamask/snaps-ui';
+
+
+// get transaction details and display in a metamask snap
+export const onTransaction: OnTransactionHandler = async ({
+  transaction,
+  chainId,
+  transactionOrigin,
+}) => {
+  const transactionInfo = JSON.stringify(transaction)
+  const chainIdInfo = chainId;
+  const transactionOriginInfo = transactionOrigin;
+ 
+  return {
+    content: panel([
+      heading('My Transaction Insights'),
+      text(`${transactionInfo}`),
+      text(`${chainIdInfo}`),
+      text(`${transactionOriginInfo}`),
+    ])
+  };
+};
+
+
 
 /**
  * Handle incoming JSON-RPC requests, sent through `wallet_invokeSnap`.
